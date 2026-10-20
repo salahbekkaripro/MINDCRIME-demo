@@ -1,0 +1,9 @@
+.git
+.tools
+.m2-local
+.npm-cache
+.logs
+.data
+**/node_modules
+**/target
+**/dist

@@ -1,0 +1,28 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: mindcrime
+      POSTGRES_USER: mindcrime
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-mindcrime-demo-local}
+    volumes:
+      - mindcrime-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mindcrime -d mindcrime"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+  app:
+    build: .
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: postgres
+      DB_URL: jdbc:postgresql://db:5432/mindcrime
+      DB_USER: mindcrime
+      DB_PASSWORD: ${DB_PASSWORD:-mindcrime-demo-local}
+    depends_on:
+      db:
+        condition: service_healthy
+volumes:
+  mindcrime-db:
